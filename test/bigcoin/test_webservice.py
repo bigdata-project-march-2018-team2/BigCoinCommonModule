@@ -1,6 +1,11 @@
 
+try:
+    # Python 3
+    from unittest import mock
+except ImportError:
+    # Python 2, install from pip first
+    import mock
 import unittest
-import mock
 from bigcoin import webservice
 import json
 import requests
@@ -23,14 +28,15 @@ def mocked_requests_get(*args, **kwargs):
     return MockResponse(None, 404)
 
 
-class TestStringMethods(unittest.TestCase):
+class TestWebservice(unittest.TestCase):
 
     @mock.patch('requests.get', side_effect=mocked_requests_get)
-    def test_request_response(self, mock_get):
+    def test_get_json_from_address(self, mock_get):
         #test normal response
     	response = webservice.get_json_from_address("http://mock.url/test1")
     	self.assertEqual(response, {"key1": "value1"})
         #test exit with error 20 on non ok response
+        passed_404 = False
         try:
             response = webservice.get_json_from_address("http://mock.url/inexistant_url")
         except SystemExit as e:
@@ -38,6 +44,7 @@ class TestStringMethods(unittest.TestCase):
                 passed_404 = True
         assert passed_404
         #test exit with error 10 on timeout
+        passed_timeout = False
         try:
             response = webservice.get_json_from_address("http://mock.url/timeout")
         except SystemExit as e:

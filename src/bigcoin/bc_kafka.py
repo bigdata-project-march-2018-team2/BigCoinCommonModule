@@ -1,6 +1,5 @@
 import sys
-import requests
-from kafka import KafkaProducer
+from kafka import KafkaConsumer,KafkaProducer
 from kafka.errors import KafkaTimeoutError
 
 
@@ -21,3 +20,26 @@ def send_to_topic_from_generator(topic,client_id,generator):
 		sys.exit(30) #Kafka timeout
 	except StopIteration:
 		kafka_producer.close()
+
+
+class BCKafkaConsumer:
+
+	_consumer = None
+
+	def __init__(self,topic,client_id):
+		self._consumer = KafkaConsumer(topic, client_id=client_id, group_id=client_id, enable_auto_commit=False,auto_offset_reset='earliest')
+
+	def __del__(self):
+		self._consumer.close(autocommit=False)
+		
+	# Try to get records from kafka, return a list of message
+	def get_messages(self):
+		partitions_records = self._consumer.poll(timeout_ms=1000)
+		list_value = []
+		for partition in partitions_records:
+			for record in partitions_records[partition]:
+				list_value.append(record.value)
+		return list_value
+
+	def set_messages_read(self):
+		self._consumer.commit()

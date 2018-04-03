@@ -1,8 +1,6 @@
 import sys
 import os
-from elasticsearch import Elasticsearch,ConnectionTimeout
-from elasticsearch import helpers
-
+import elasticsearch
 
 
 class BCElasticsearch:
@@ -18,13 +16,13 @@ class BCElasticsearch:
 		port = os.environ["ES_PORT"] if "ES_PORT" in os.environ else 9200
 		http_auth = (user,password) if (user is not None and password is not None) else None
 		try:
-			self._es = Elasticsearch([host], http_auth=http_auth, port=port, scheme='http')
-		except ConnectionTimeout:
+			self._es = elasticsearch.Elasticsearch([host], http_auth=http_auth, port=port, scheme='http')
+		except elasticsearch.ConnectionTimeout:
 			sys.exit(50)
 
 	# Try to get records from kafka, return a list of message
 	def send_messages(self,generator):
 		try:
-			helpers.bulk(self._es, generator)
-		except ConnectionTimeout:
+			elasticsearch.helpers.bulk(self._es, generator)
+		except elasticsearch.ConnectionTimeout:
 			sys.exit(50)

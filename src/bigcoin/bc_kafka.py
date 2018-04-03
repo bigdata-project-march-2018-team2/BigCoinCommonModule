@@ -1,5 +1,5 @@
 import sys
-from kafka import KafkaConsumer,KafkaProducer
+import kafka
 from kafka.errors import KafkaTimeoutError
 
 
@@ -11,7 +11,7 @@ from kafka.errors import KafkaTimeoutError
 # Exit if kafka timeout timed out
 def send_to_topic_from_generator(topic,client_id,generator):
 	try:
-		kafka_producer = KafkaProducer(client_id=client_id,acks='all',retries=0, linger_ms=100)
+		kafka_producer = kafka.KafkaProducer(client_id=client_id,acks='all',retries=0, linger_ms=100)
 		while True:
 			message,key,timestamp_ms = generator.next()
 			kafka_producer.send(topic=topic,value=message,key=key,timestamp_ms=timestamp_ms)
@@ -27,7 +27,7 @@ class BCKafkaConsumer:
 	_consumer = None
 
 	def __init__(self,topic,client_id):
-		self._consumer = KafkaConsumer(topic, client_id=client_id, group_id=client_id, enable_auto_commit=False,auto_offset_reset='earliest')
+		self._consumer = kafka.KafkaConsumer(topic, client_id=client_id, group_id=client_id, enable_auto_commit=False,auto_offset_reset='earliest')
 
 	def __del__(self):
 		self._consumer.close(autocommit=False)

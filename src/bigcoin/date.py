@@ -16,3 +16,11 @@ def get_date_string_yyyy_mm_dd_from_datetime(date_time):
 	if not isinstance(date_time,datetime.datetime):
 		date_time = datetime.datetime.today()
 	return date_time.strftime("%Y-%m-%d")
+
+# Add a day to the given date as string and return the new date as string. If the date format is not valid, return None
+def increment_a_day_from_date_as_string(date_string):
+	if date_string  is not None and is_date_format_yyyy_mm_dd_valid(date_string):
+		year,month,day = date_string.split('-')
+		new_date = datetime.datetime(int(year),int(month),int(day)) + datetime.timedelta(days=1)
+		return get_date_string_yyyy_mm_dd_from_datetime(new_date)
+	return None

@@ -20,5 +20,18 @@ class TestDate(unittest.TestCase):
         today_string = datetime.datetime.today().strftime("%Y-%m-%d")
         self.assertEquals(bcdate.get_date_string_yyyy_mm_dd_from_datetime(datetime.datetime(2018,2,18)),"2018-02-18")
         self.assertEquals(bcdate.get_date_string_yyyy_mm_dd_from_datetime(None),today_string)
+
+
+    def test_increment_a_day_from_date_as_string(self):
+        #test normal date
+        self.assertEquals(bcdate.increment_a_day_from_date_as_string("2018-02-18"),"2018-02-19")
+        #test increment month if last day of month
+        self.assertEquals(bcdate.increment_a_day_from_date_as_string("2018-03-31"),"2018-04-01")
+        #test increment year if last day of year
+        self.assertEquals(bcdate.increment_a_day_from_date_as_string("2017-12-31"),"2018-01-01")
+        #test invalid format date
+        self.assertEquals(bcdate.increment_a_day_from_date_as_string("18-2-19"),None)
+        self.assertEquals(bcdate.increment_a_day_from_date_as_string("not even a date"),None)
+
 if __name__ == "__main__":
     unittest.main()

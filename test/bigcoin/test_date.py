@@ -21,6 +21,11 @@ class TestDate(unittest.TestCase):
         self.assertEquals(bcdate.get_date_string_yyyy_mm_dd_from_datetime(datetime.datetime(2018,2,18)),"2018-02-18")
         self.assertEquals(bcdate.get_date_string_yyyy_mm_dd_from_datetime(None),today_string)
 
+    def test_get_datetime_from_string(self):
+        today_string = datetime.datetime.today().strftime("%Y-%m-%d")
+        self.assertEquals(bcdate.get_datetime_from_string("2018-02-18"),datetime.datetime(2018,2,18))
+        self.assertEquals(bcdate.get_datetime_from_string('invalid'),None)
+
 
     def test_increment_a_day_from_date_as_string(self):
         #test normal date
